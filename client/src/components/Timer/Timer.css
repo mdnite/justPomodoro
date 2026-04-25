@@ -1,0 +1,60 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #1a1a2e;
+  min-width: 280px;
+}
+
+.timer__session-type {
+  margin: 0;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #a0a0b0;
+}
+
+.timer__countdown {
+  margin: 0;
+  font-size: 5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: #e8e8f0;
+}
+
+.timer__session-count {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #a0a0b0;
+}
+
+.timer__controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.timer__btn {
+  padding: 0.6rem 1.6rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: #e94560;
+  color: #fff;
+  transition: opacity 0.15s;
+}
+
+.timer__btn:hover {
+  opacity: 0.85;
+}
+
+.timer__btn--secondary {
+  background: #2e2e4a;
+  color: #c0c0d0;
+}
