@@ -1,0 +1,68 @@
+# Pomodoro App — Project Brief
+
+## Stack
+- Frontend: React (Vite)
+- Backend: Node.js + Express
+- Database: MySQL
+- Structure: Monorepo (client/ and server/ folders)
+
+## Features
+- Pomodoro timer with start, pause, reset
+- Custom work/break durations (settings)
+- Task list linked to sessions
+- Session history and stats
+- Sound alerts and browser notifications
+- More features to be added later
+
+## Folder Structure
+pomodoro/
+├── client/
+│   └── src/
+│       ├── components/   (Timer, TaskList, Settings, Stats)
+│       ├── hooks/
+│       ├── services/     (API calls)
+│       ├── context/
+│       ├── App.jsx
+│       └── main.jsx
+└── server/
+    ├── routes/           (tasks.js, sessions.js, settings.js)
+    ├── db/
+    │   ├── connection.js
+    │   └── migrations/
+    ├── middleware/
+    └── index.js
+
+## Database Schema
+- tasks: id, title, is_completed, created_at
+- pomodoro_sessions: id, task_id (FK), duration, type, completed_at
+- settings: id (always 1), work_duration, short_break, long_break, sound_enabled
+
+## API Routes
+GET    /api/tasks
+POST   /api/tasks
+PUT    /api/tasks/:id
+DELETE /api/tasks/:id
+GET    /api/sessions
+POST   /api/sessions
+GET    /api/sessions/stats
+GET    /api/settings
+PUT    /api/settings
+
+## Build Phases
+- [x] Phase 1 — Project setup & MySQL connection
+- [ ] Phase 2 — Timer component (frontend only)  ← CURRENT
+- [ ] Phase 3 — Sound & notifications
+- [ ] Phase 4 — Tasks (first full stack feature)
+- [ ] Phase 5 — Settings
+- [ ] Phase 6 — Stats & history
+- [ ] Phase 7 — Polish, extra features & Prisma migration
+
+## Decisions
+- **ORM strategy:** Use raw SQL (mysql2) through Phase 6. Migrate to Prisma in Phase 7 once the schema is stable.
+
+## Conventions
+- Use async/await (not .then/.catch)
+- Express routes use try/catch with next(err)
+- React state: useState for local, Context for global
+- API calls live in src/services/, never inside components
+- Use .env for all secrets (DB credentials, port numbers)
