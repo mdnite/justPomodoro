@@ -1,9 +1,11 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import tasksRouter from './routes/tasks.js';
-import sessionsRouter from './routes/sessions.js';
-import settingsRouter from './routes/settings.js';
+import authRouter from './auth/auth.routes.js';
+import tasksRouter from './tasks/tasks.routes.js';
+import sessionsRouter from './sessions/sessions.routes.js';
+import settingsRouter from './settings/settings.routes.js';
+import weatherRouter from './weather/weather.routes.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -11,9 +13,11 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+app.use('/api/auth', authRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/sessions', sessionsRouter);
 app.use('/api/settings', settingsRouter);
+app.use('/api/weather', weatherRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
