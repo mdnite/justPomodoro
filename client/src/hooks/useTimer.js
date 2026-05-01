@@ -1,7 +1,7 @@
 import { useReducer, useEffect } from 'react';
 
 const DURATIONS = {
-  work: 25 * 60,
+  work: 1 * 60,
   short_break: 5 * 60,
   long_break: 15 * 60,
 };
