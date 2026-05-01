@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as sessionsService from './sessions.service.js';
 
 const router = Router();
-
+// This is to get some stats about the sessions, like how many are active, how many have been created, etc.
 router.get('/stats', async (_req, res, next) => {
   try {
     res.json(await sessionsService.getStats());
@@ -11,6 +11,7 @@ router.get('/stats', async (_req, res, next) => {
   }
 });
 
+// Get all sessions, mostly for debugging purposes, will return a LOT of data lol.
 router.get('/', async (_req, res, next) => {
   try {
     res.json(await sessionsService.getAllSessions());
@@ -19,6 +20,7 @@ router.get('/', async (_req, res, next) => {
   }
 });
 
+// Create a new session
 router.post('/', async (req, res, next) => {
   try {
     const session = await sessionsService.createSession(req.body);
