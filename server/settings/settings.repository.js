@@ -1,5 +1,5 @@
 import pool from '../db/connection.js';
-
+// This file contains all the database queries related to the settings, & stuff like that
 export async function find() {
   const [rows] = await pool.query('SELECT * FROM settings WHERE id = 1');
   return rows[0] ?? null;

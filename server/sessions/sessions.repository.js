@@ -1,5 +1,4 @@
 import pool from '../db/connection.js';
-
 export async function findAll() {
   const [rows] = await pool.query(
     'SELECT * FROM pomodoro_sessions ORDER BY completed_at DESC'

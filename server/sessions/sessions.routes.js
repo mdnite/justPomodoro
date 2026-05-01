@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import * as sessionsService from './sessions.service.js';
-
+// TODO: add update and delete functions for sessions, for now we only need to create them and get stats about them, so I'll leave that for later.
 const router = Router();
+
 // This is to get some stats about the sessions, like how many are active, how many have been created, etc.
 router.get('/stats', async (_req, res, next) => {
   try {
