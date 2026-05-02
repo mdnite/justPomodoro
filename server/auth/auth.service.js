@@ -4,13 +4,11 @@ import * as authRepository from './auth.repository.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
 export async function register(email, password) {
   // TODO: hash password, check for existing user, create record
   const userExist = await authRepository.findByEmail(email);
   if (userExist) {
-    throw new Error("User already exists");
+    throw new Error("User already exists")
   }
 
   const saltRounds = 10;
@@ -34,8 +32,8 @@ export async function login(email, password) {
   // issue token
   const token = jwt.sign(
     {sub: user.id, email: user.email},
-    JWT_SECRET,
-    {expiresIn: '30d'} // expires in 1 month
+    process.env.JWT_SECRET, 
+    {expiresIn: '1d'} // should expires in 1 day instead
   );
 
   return {
