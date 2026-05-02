@@ -6,6 +6,7 @@ import tasksRouter from './tasks/tasks.routes.js';
 import sessionsRouter from './sessions/sessions.routes.js';
 import settingsRouter from './settings/settings.routes.js';
 import weatherRouter from './weather/weather.routes.js';
+import { authenticate } from './auth/auth.middleware.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -14,9 +15,9 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRouter);
-app.use('/api/tasks', tasksRouter);
-app.use('/api/sessions', sessionsRouter);
-app.use('/api/settings', settingsRouter);
+app.use('/api/tasks', authenticate,tasksRouter);
+app.use('/api/sessions', authenticate, sessionsRouter);
+app.use('/api/settings', authenticate, settingsRouter);
 app.use('/api/weather', weatherRouter);
 
 app.use((err, _req, res, _next) => {

@@ -16,8 +16,17 @@ router.post('/register', async (req, res, next) => {
 router.post('/login', async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const result = await authService.login(email, password);
-    res.json(result);
+    const {token, user} = await authService.login(email, password);
+    
+    // use Cookies for authentication (stores token in cookie)
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "lax",
+      maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+    });
+
+    res.json(user);
   } catch (err) {
     next(err);
   }
@@ -25,7 +34,7 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/logout', async (req, res, next) => {
   try {
-    await authService.logout();
+    res.clearCookie('token');
     res.status(204).end();
   } catch (err) {
     next(err);

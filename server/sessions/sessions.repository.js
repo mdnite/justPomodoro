@@ -18,6 +18,14 @@ export async function create(task_id, duration, type) {
   return rows[0];
 }
 
+export async function remove(id) {
+  const [result] = await pool.query(
+    'DELETE FROM pomodoro_sessions WHERE id = ?',
+    [id]
+  );
+  return result.affectedRows > 0;
+}
+
 export async function getStats() {
   const [rows] = await pool.query(`
     SELECT
