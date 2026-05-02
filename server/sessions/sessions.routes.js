@@ -31,4 +31,14 @@ router.post('/', async (req, res, next) => {
   }
 });
 
+// Delete a session
+router.post('/:id', async (req, res, next) => {
+  try {
+    await sessionsService.deleteSession(req.params.id);
+    res.status(204).send();
+  } catch (error) {
+    next(err);
+  }
+})
+
 export default router;
