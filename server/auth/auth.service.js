@@ -10,7 +10,9 @@ export async function register(email, password) {
   // TODO: hash password, check for existing user, create record
   const userExist = await authRepository.findByEmail(email);
   if (userExist) {
-    throw new Error("User already exists");
+    const err = new Error('User already exists');
+    err.status = 409;
+    throw err;
   }
 
   const saltRounds = 10;
@@ -28,7 +30,9 @@ export async function login(email, password) {
   const isValid = await bcrypt.compare(password, hashedPassword)
   
   if (!user || !isValid) {
-    throw new Error('Invalid email or password');
+    const err = new Error('Invalid email or password')
+    err.status = 401;
+    throw err;
   }
 
   // issue token
