@@ -25,7 +25,7 @@ export async function login(email, password) {
   const user = await authRepository.findByEmail(email);
 
   const hashedPassword = user?.password_hash;
-  const isValid = await bcrypt.compare(password,password_hash)
+  const isValid = await bcrypt.compare(password, hashedPassword)
   
   if (!user || !isValid) {
     throw new Error('Invalid email or password');

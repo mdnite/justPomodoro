@@ -7,10 +7,12 @@ import sessionsRouter from './sessions/sessions.routes.js';
 import settingsRouter from './settings/settings.routes.js';
 import weatherRouter from './weather/weather.routes.js';
 import { authenticate } from './auth/auth.middleware.js';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+app.use(cookieParser);
 app.use(cors());
 app.use(express.json());
 
