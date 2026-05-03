@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as authService from './auth.service.js';
+import { authenticate } from './auth.middleware.js';
 
 const router = Router();
 
@@ -39,6 +40,10 @@ router.post('/logout', async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+});
+
+router.get('/me', authenticate, (req, res) => {
+  res.json({ id: req.user.sub, email: req.user.email });
 });
 
 export default router;

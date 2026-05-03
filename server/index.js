@@ -22,11 +22,14 @@ app.use('/api/sessions', authenticate, sessionsRouter);
 app.use('/api/settings', authenticate, settingsRouter);
 app.use('/api/weather', weatherRouter);
 
+
+//Global error handler
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
   res.status(500).json({ error: err.message });
 });
 
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
