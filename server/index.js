@@ -26,7 +26,8 @@ app.use('/api/weather', weatherRouter);
 //Global error handler
 app.use((err, _req, res, _next) => {
   console.error(err.stack);
-  res.status(500).json({ error: err.message });
+  const status = err.status || 500;
+  res.status(status).json({ error: err.message });
 });
 
 // Start the server
