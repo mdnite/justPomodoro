@@ -128,12 +128,15 @@
 }
 
 .auth-password-wrapper {
+  max-height: 0;
+  overflow: hidden;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 300ms ease;
+  transition: max-height 300ms ease, opacity 300ms ease;
 }
 
 .auth-password-wrapper.visible {
+  max-height: 80px;
   opacity: 1;
   pointer-events: auto;
 }
