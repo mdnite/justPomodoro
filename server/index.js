@@ -8,6 +8,7 @@ import settingsRouter from './settings/settings.routes.js';
 import weatherRouter from './weather/weather.routes.js';
 import { authenticate } from './auth/auth.middleware.js';
 import cookieParser from 'cookie-parser';
+import passport from 'passport';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -15,6 +16,7 @@ const PORT = process.env.PORT || 3001;
 app.use(cookieParser());
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 app.use('/api/auth', authRouter);
 app.use('/api/tasks', authenticate,tasksRouter);

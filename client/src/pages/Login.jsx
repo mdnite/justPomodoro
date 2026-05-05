@@ -61,7 +61,7 @@ function Login() {
 
           {successMessage && <p className="auth-success">{successMessage}</p>}
 
-          <button className="auth-btn" type="button">
+          <button className="auth-btn" type="button" onClick={() => window.location.href= "http://localhost:3001/api/auth/google"}>
             <GoogleIcon /> Sign in with Google
           </button>
           <button className="auth-btn" type="button">

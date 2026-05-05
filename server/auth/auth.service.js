@@ -34,22 +34,46 @@ export async function login(email, password) {
   }
 
   // issue token
-  const token = jwt.sign(
-    {sub: user.id, email: user.email},
-    process.env.JWT_SECRET, 
-    {expiresIn: '1d'} // should expires in 1 day instead
-  );
-
-  return {
-    token, 
-    user: { 
-      id: user.id, 
-      email: user.email
-    } 
-  };
+  return signJwtAndReturnUser(user);
 }
 
 export async function logout() {
   // TODO: invalidate session/token
   // nothing on the server-side - cookie is cleared in the router
+}
+
+
+export async function findOrCreateGoogleUser(profile) {
+    const email = profile.emails?.[0]?.value;
+    const googleId = profile.id;
+
+    if(!email) throw new Error('No email returned from Google');
+
+    // check if user exists
+    let user = await authRepository.findByGoogleId(googleId)
+    if (user) { return signJwtAndReturnUser(user) } // issue token
+
+    // check if email already registered
+    user = await authRepository.findByEmail(email);
+    if (user) {
+      // link google_id to existing account
+      await authRepository.linkGoogleId(user.id, googleId);
+      return signJwtAndReturnUser({...user, google_id: googleId});
+    }
+
+    // create new user
+    user = await authRepository.createGoogleUser(email, googleId);
+    return signJwtAndReturnUser(user);
+}
+
+
+// helper function to sign JWT and return user
+function signJwtAndReturnUser(user) {
+    const token = jwt.sign(
+        {id: user.id, email: user.email},
+        process.env.JWT_SECRET,
+        { expiresIn: '1d' }
+      );
+
+      return { token, user }
 }

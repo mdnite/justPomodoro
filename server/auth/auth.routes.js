@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as authService from './auth.service.js';
 import { authenticate } from './auth.middleware.js';
+import passport from '../auth/passport.js';
 
 const router = Router();
 
@@ -45,5 +46,28 @@ router.post('/logout', async (req, res, next) => {
 router.get('/me', authenticate, (req, res) => {
   res.json({ id: req.user.sub, email: req.user.email });
 });
+
+// kick off Google OAuth
+router.get('/google',
+  passport.authenticate('google', {scope: ['profile', 'email'], session: false })
+);
+
+
+// Google redirects back here
+router.get('/google/callback',
+  passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login', session: false }),
+  (req, res) => {
+    const { token } = req.user;
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    });
+
+    res.redirect('http://localhost:5173/');
+  }
+)
 
 export default router;
