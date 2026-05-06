@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export async function authenticate(req, res, next) {
-  // TODO: verify session/token and attach req.user
   const token = req.cookies.token;
 
   if(!token) {

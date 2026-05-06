@@ -4,7 +4,6 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export async function register(email, password) {
-  // TODO: hash password, check for existing user, create record
   const userExist = await authRepository.findByEmail(email);
   if (userExist) {
     const err = new Error('User already exists');
@@ -20,7 +19,6 @@ export async function register(email, password) {
 }
 
 export async function login(email, password) {
-  // TODO: look up user, verify password hash, issue session/token
   const user = await authRepository.findByEmail(email);
 
   const hashedPassword = user?.password_hash;
@@ -37,7 +35,6 @@ export async function login(email, password) {
 }
 
 export async function logout() {
-  // TODO: invalidate session/token
   // nothing on the server-side - cookie is cleared in the router
 }
 
