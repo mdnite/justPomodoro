@@ -1,4 +1,3 @@
-import * as sessionServices from '../sessions/sessions.service.js';
 import * as authRepository from './auth.repository.js';
 
 import bcrypt from 'bcrypt';
@@ -66,6 +65,29 @@ export async function findOrCreateGoogleUser(profile) {
     return signJwtAndReturnUser(user);
 }
 
+export async function findOrCreateGithubUser(profile) {
+    const email = profile.emails?.[0]?.value;
+    const githubId = profile.id;
+
+    if(!email) throw new Error('No email returned from Github');
+
+    // check if user exists
+    let user = await authRepository.findByGithubId(githubId)
+    if (user) { return signJwtAndReturnUser(user) } // issue token
+
+    // check if email already registered
+    user = await authRepository.findByEmail(email);
+    if (user) {
+      // link github_id to existing account
+      await authRepository.linkGithubId(user.id, githubId);
+      return signJwtAndReturnUser({...user, github_id: githubId});
+    }
+
+    // create new user
+    user = await authRepository.createGithubUser(email, githubId);
+    return signJwtAndReturnUser(user);
+}
+
 
 // helper function to sign JWT and return user
 function signJwtAndReturnUser(user) {
@@ -77,3 +99,4 @@ function signJwtAndReturnUser(user) {
 
       return { token, user }
 }
+

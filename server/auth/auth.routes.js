@@ -70,4 +70,18 @@ router.get('/google/callback',
   }
 )
 
+router.get('/github',
+  passport.authenticate('github', {scope: ['user:email'], session: false }),
+  (req, res) => {
+    const { token } = req.user;
+
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
+    });   
+    res.redirect('http://localhost:5173/');
+  }
+)
 export default router;

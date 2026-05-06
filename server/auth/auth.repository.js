@@ -28,3 +28,18 @@ export async function createGoogleUser(email, googleId) {
   const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
   return rows[0];
 }
+
+export async function findByGithubId(githubId) {
+  const [rows] = await pool.query('SELECT * FROM users WHERE github_id = ?', [githubId]);
+  return rows[0] ?? null;
+}
+
+export async function createGithubUser(email, githubId) {
+  const [result] = await pool.query('INSERT INTO users (email, github_id) VALUES (?, ?)', [email, githubId]);
+  const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [result.insertId]);
+  return rows[0];
+}
+
+export async function linkGithubId(userId, githubId) {
+  await pool.query('UPDATE users SET github_id = ? WHERE id = ?', [githubId, userId]);
+}

@@ -22,4 +22,21 @@ passport.use(
     )
 );
 
+passport.use(
+    new GithubStrategy(
+        {
+            clientID: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+            callbackURL: "http://localhost:3001/api/auth/github/callback"
+        },
+        async (accessToken, refreshToken, profile, done) => {
+            try {
+                const user = await findOrCreateGithubUser(profile);
+                done(null, user);
+            } catch (error) {
+                done(error, null);
+            }
+        }
+    )
+);
 export default passport
