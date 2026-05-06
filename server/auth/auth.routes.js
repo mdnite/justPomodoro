@@ -23,7 +23,7 @@ router.post('/login', async (req, res, next) => {
     // use Cookies for authentication (stores token in cookie)
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: false, // false for development, true for production with HTTPS
       sameSite: "lax",
       maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
     });
@@ -61,7 +61,7 @@ router.get('/google/callback',
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: false, // false for development, true for production with HTTPS
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
@@ -83,7 +83,7 @@ router.get('/github/callback',
 
     res.cookie('token', token, {
       httpOnly: true,
-      secure: false,
+      secure: false, // false for development, true for production with HTTPS
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     });
