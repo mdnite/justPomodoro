@@ -70,8 +70,14 @@ router.get('/google/callback',
   }
 )
 
+// kick off GitHub OAuth
 router.get('/github',
-  passport.authenticate('github', {scope: ['user:email'], session: false }),
+  passport.authenticate('github', { scope: ['user:email'], session: false })
+);
+
+// GitHub redirects back here
+router.get('/github/callback',
+  passport.authenticate('github', { failureRedirect: 'http://localhost:5173/login', session: false }),
   (req, res) => {
     const { token } = req.user;
 
@@ -80,8 +86,8 @@ router.get('/github',
       secure: false,
       sameSite: 'lax',
       maxAge: 1000 * 60 * 60 * 24, // 1 day
-    });   
+    });
     res.redirect('http://localhost:5173/');
   }
-)
+);
 export default router;

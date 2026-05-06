@@ -64,7 +64,7 @@ function Login() {
           <button className="auth-btn" type="button" onClick={() => window.location.href= "http://localhost:3001/api/auth/google"}>
             <GoogleIcon /> Sign in with Google
           </button>
-          <button className="auth-btn" type="button">
+          <button className="auth-btn" type="button" onClick={() => window.location.href = "http://localhost:3001/api/auth/github"}>
             <GitHubIcon /> Sign in with GitHub
           </button>
 
