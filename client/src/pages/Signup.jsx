@@ -54,10 +54,10 @@ function Signup() {
         <div className="auth-card">
           <h1 className="auth-card__heading">Create Account</h1>
 
-          <button className="auth-btn" type="button">
+          <button className="auth-btn" type="button" onClick={() => window.location.href = 'http://localhost:3001/api/auth/google'}>
             <GoogleIcon /> Sign up with Google
           </button>
-          <button className="auth-btn" type="button">
+          <button className="auth-btn" type="button" onClick={() => window.location.href = 'http://localhost:3001/api/auth/github'}>
             <GitHubIcon /> Sign up with GitHub
           </button>
 

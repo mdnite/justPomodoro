@@ -64,24 +64,25 @@ export async function findOrCreateGoogleUser(profile) {
 
 export async function findOrCreateGithubUser(profile) {
     const email = profile.emails?.[0]?.value;
-    const githubId = profile.id;
-
-    if(!email) throw new Error('No email returned from Github');
+    const githubId = String(profile.id);
+    
+    // if the github user set their email as private, use a placeholder derived from their Github username
+    const resolvedEmail = email || `github_${githubId}@noemail.com`;
 
     // check if user exists
     let user = await authRepository.findByGithubId(githubId)
     if (user) { return signJwtAndReturnUser(user) } // issue token
 
     // check if email already registered
-    user = await authRepository.findByEmail(email);
+    user = email ? await authRepository.findByEmail(resolvedEmail) : null;
     if (user) {
       // link github_id to existing account
       await authRepository.linkGithubId(user.id, githubId);
       return signJwtAndReturnUser({...user, github_id: githubId});
     }
 
-    // create new user
-    user = await authRepository.createGithubUser(email, githubId);
+    // create new user (if email is private then use resolved email)
+    user = await authRepository.createGithubUser(resolvedEmail, githubId);
     return signJwtAndReturnUser(user);
 }
 
