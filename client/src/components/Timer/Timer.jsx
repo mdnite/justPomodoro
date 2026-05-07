@@ -1,4 +1,5 @@
 import { useTimer } from '../../hooks/useTimer';
+import { useSettings } from '../../context/SettingsContext';
 import './Timer.css';
 
 const SESSION_LABELS = {
@@ -7,14 +8,19 @@ const SESSION_LABELS = {
   long_break: 'Long Break',
 };
 
+// Format a number of seconds as MM:SS.
 function formatTime(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, '0');
   const s = String(seconds % 60).padStart(2, '0');
   return `${m}:${s}`;
 }
 
+// Pomodoro countdown display backed by the useTimer hook.
 export default function Timer() {
-  const { timeRemaining, isRunning, sessionType, sessionCount, autoStart, start, pause, reset, toggleAutoStart } = useTimer();
+  const { settings } = useSettings();
+  const { timeRemaining, isRunning, sessionType, sessionCount, autoStart, start, pause, reset, toggleAutoStart } = useTimer({
+    sessionsBeforeLongBreak: settings?.sessions_before_long_break,
+  });
 
   return (
     <div className="timer">

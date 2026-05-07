@@ -19,8 +19,8 @@ app.use(express.json());
 app.use(passport.initialize());
 
 app.use('/api/auth', authRouter);
-app.use('/api/tasks', authenticate,tasksRouter);
-app.use('/api/sessions', authenticate, sessionsRouter);
+app.use('/api/tasks', tasksRouter);
+app.use('/api/sessions', sessionsRouter);
 app.use('/api/settings', authenticate, settingsRouter);
 app.use('/api/weather', weatherRouter);
 

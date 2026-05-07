@@ -1,0 +1,86 @@
+.settings {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 24px;
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.settings__heading {
+  font-family: 'Fraunces', serif;
+  font-size: 22px;
+  font-weight: 500;
+  color: #F5F5F0;
+  margin-bottom: 8px;
+}
+
+.settings__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.settings__field--checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings__label {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: #A0A0A0;
+}
+
+.settings__input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #F5F5F0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  outline: none;
+  transition: border-color 200ms ease;
+}
+
+.settings__input:focus {
+  border-color: #5B9BD5;
+}
+
+.settings__save {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #F5F5F0;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 200ms ease, border-color 200ms ease;
+  margin-top: 8px;
+}
+
+.settings__save:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #5B9BD5;
+}
+
+.settings__status {
+  color: #5B9BD5;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.settings__error {
+  color: #ff6b6b;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 4px;
+}

@@ -1,44 +1,35 @@
 import { Router } from 'express';
 import * as sessionsService from './sessions.service.js';
-// TODO: add update and delete functions for sessions, for now we only need to create them and get stats about them, so I'll leave that for later.
+import { authenticate } from '../auth/auth.middleware.js';
+
 const router = Router();
 
-// This is to get some stats about the sessions, like how many are active, how many have been created, etc.
-router.get('/stats', async (_req, res, next) => {
+// Return aggregated stats for the authenticated user.
+router.get('/stats', authenticate, async (req, res, next) => {
   try {
-    res.json(await sessionsService.getStats());
+    res.json(await sessionsService.getSessionStats(req.user.id));
   } catch (err) {
     next(err);
   }
 });
 
-// Get all sessions, mostly for debugging purposes, will return a LOT of data lol.
-router.get('/', async (_req, res, next) => {
+// Return all sessions for the authenticated user.
+router.get('/', authenticate, async (req, res, next) => {
   try {
-    res.json(await sessionsService.getAllSessions());
+    res.json(await sessionsService.getUserSessions(req.user.id));
   } catch (err) {
     next(err);
   }
 });
 
-// Create a new session
-router.post('/', async (req, res, next) => {
+// Save a completed work session for the authenticated user.
+router.post('/', authenticate, async (req, res, next) => {
   try {
-    const session = await sessionsService.createSession(req.body);
+    const session = await sessionsService.createSession(req.user.id, req.body);
     res.status(201).json(session);
   } catch (err) {
     next(err);
   }
 });
-
-// Delete a session
-router.post('/:id', async (req, res, next) => {
-  try {
-    await sessionsService.deleteSession(req.params.id);
-    res.status(204).send();
-  } catch (error) {
-    next(err);
-  }
-})
 
 export default router;

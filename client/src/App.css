@@ -5,6 +5,17 @@
   align-items: center;
   justify-content: center;
   gap: 2rem;
+  padding: 2rem 1rem;
+}
+
+.app__panels {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 800px;
 }
 
 .app__logout {

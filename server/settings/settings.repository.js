@@ -1,20 +1,26 @@
 import pool from '../db/connection.js';
-// This file contains all the database queries related to the settings, & stuff like that
-export async function find() {
-  const [rows] = await pool.query('SELECT * FROM settings WHERE id = 1');
+
+// Return the settings row for a user, or null if none exists yet.
+export async function getByUserId(userId) {
+  const [rows] = await pool.query(
+    'SELECT id, user_id, work_duration, short_break, long_break, sound_enabled, sessions_before_long_break FROM settings WHERE user_id = ?',
+    [userId]
+  );
   return rows[0] ?? null;
 }
 
-export async function upsert({ work_duration, short_break, long_break, sound_enabled }) {
+// Insert or update the settings row for a user, then return the updated row.
+export async function update(userId, { work_duration, short_break, long_break, sound_enabled, sessions_before_long_break }) {
   await pool.query(
-    `INSERT INTO settings (id, work_duration, short_break, long_break, sound_enabled)
-     VALUES (1, ?, ?, ?, ?)
+    `INSERT INTO settings (user_id, work_duration, short_break, long_break, sound_enabled, sessions_before_long_break)
+     VALUES (?, ?, ?, ?, ?, ?)
      ON DUPLICATE KEY UPDATE
        work_duration = VALUES(work_duration),
        short_break   = VALUES(short_break),
        long_break    = VALUES(long_break),
-       sound_enabled = VALUES(sound_enabled)`,
-    [work_duration, short_break, long_break, sound_enabled]
+       sound_enabled = VALUES(sound_enabled),
+       sessions_before_long_break = VALUES(sessions_before_long_break)`,
+    [userId, work_duration, short_break, long_break, sound_enabled, sessions_before_long_break]
   );
-  return find();
+  return getByUserId(userId);
 }

@@ -1,37 +1,42 @@
 import { Router } from 'express';
 import * as tasksService from './tasks.service.js';
+import { authenticate } from '../auth/auth.middleware.js';
 
 const router = Router();
 
-router.get('/', async (_req, res, next) => {
+// Return all tasks for the authenticated user.
+router.get('/', authenticate, async (req, res, next) => {
   try {
-    res.json(await tasksService.getAllTasks());
+    res.json(await tasksService.getUserTasks(req.user.id));
   } catch (err) {
     next(err);
   }
 });
 
-router.post('/', async (req, res, next) => {
+// Create a task for the authenticated user.
+router.post('/', authenticate, async (req, res, next) => {
   try {
-    const task = await tasksService.createTask(req.body.title);
+    const task = await tasksService.createTask(req.user.id, req.body.title);
     res.status(201).json(task);
   } catch (err) {
     next(err);
   }
 });
 
-router.put('/:id', async (req, res, next) => {
+// Update a task owned by the authenticated user.
+router.put('/:id', authenticate, async (req, res, next) => {
   try {
-    const task = await tasksService.updateTask(req.params.id, req.body);
+    const task = await tasksService.updateTask(req.user.id, req.params.id, req.body);
     res.json(task);
   } catch (err) {
     next(err);
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+// Delete a task owned by the authenticated user.
+router.delete('/:id', authenticate, async (req, res, next) => {
   try {
-    await tasksService.deleteTask(req.params.id);
+    await tasksService.deleteTask(req.user.id, req.params.id);
     res.status(204).end();
   } catch (err) {
     next(err);

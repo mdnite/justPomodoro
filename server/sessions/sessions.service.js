@@ -1,17 +1,28 @@
 import * as sessionsRepository from './sessions.repository.js';
 
-export async function getAllSessions() {
-  return sessionsRepository.findAll();
+// Validate input and persist a completed work session for the user.
+export async function createSession(userId, { duration, type, completedAt }) {
+  if (type !== 'work') {
+    const err = new Error('Only work sessions can be saved');
+    err.status = 400;
+    throw err;
+  }
+  const numericDuration = Number(duration);
+  if (!Number.isFinite(numericDuration) || numericDuration <= 0) {
+    const err = new Error('Duration must be a positive number');
+    err.status = 400;
+    throw err;
+  }
+  const completed = completedAt ? new Date(completedAt) : new Date();
+  return sessionsRepository.save(userId, numericDuration, type, completed);
 }
 
-export async function createSession({ task_id, duration, type }) {
-  return sessionsRepository.create(task_id, duration, type);
+// Return all sessions belonging to the user.
+export async function getUserSessions(userId) {
+  return sessionsRepository.findByUserId(userId);
 }
 
-export async function deleteSession(id) {
-  return sessionsRepository.remove(id);
-}
-
-export async function getStats() {
-  return sessionsRepository.getStats();
+// Return aggregate stats for the user's sessions.
+export async function getSessionStats(userId) {
+  return sessionsRepository.getStatsByUserId(userId);
 }
