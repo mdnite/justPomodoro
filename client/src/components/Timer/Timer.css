@@ -58,3 +58,14 @@
   background: #2e2e4a;
   color: #c0c0d0;
 }
+
+.timer__btn--auto {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #F5F5F0;
+}
+
+.timer__btn--auto-on {
+  border-color: #5B9BD5;
+  color: #5B9BD5;
+}

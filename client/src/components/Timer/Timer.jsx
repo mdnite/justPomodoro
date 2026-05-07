@@ -14,7 +14,7 @@ function formatTime(seconds) {
 }
 
 export default function Timer() {
-  const { timeRemaining, isRunning, sessionType, sessionCount, start, pause, reset } = useTimer();
+  const { timeRemaining, isRunning, sessionType, sessionCount, autoStart, start, pause, reset, toggleAutoStart } = useTimer();
 
   return (
     <div className="timer">
@@ -27,6 +27,12 @@ export default function Timer() {
         </button>
         <button className="timer__btn timer__btn--secondary" onClick={reset}>
           Reset
+        </button>
+        <button
+          className={`timer__btn timer__btn--auto ${autoStart ? 'timer__btn--auto-on' : ''}`}
+          onClick={toggleAutoStart}
+        >
+          Auto {autoStart ? 'ON' : 'OFF'}
         </button>
       </div>
     </div>

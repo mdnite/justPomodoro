@@ -11,6 +11,7 @@ const initialState = {
   isRunning: false,
   sessionType: 'work',
   sessionCount: 0,
+  autoStart: false, //Off by default, can be toggled in settings later
 };
 
 function nextSession(sessionType, sessionCount) {
@@ -32,14 +33,17 @@ function timerReducer(state, action) {
     case 'TICK': {
       if (state.timeRemaining <= 1) {
         const { sessionType, sessionCount } = nextSession(state.sessionType, state.sessionCount);
-        return { ...state, isRunning: false, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
-      }
+        return { ...state, isRunning: state.autoStart, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
+      } //Auto-start next session if enabled, otherwise just switch and pause
       return { ...state, timeRemaining: state.timeRemaining - 1 };
     }
     case 'SWITCH_SESSION': {
       const { sessionType, sessionCount } = nextSession(state.sessionType, state.sessionCount);
       return { ...state, isRunning: false, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
     }
+
+    case 'TOGGLE_AUTO_START':
+      return { ...state, autoStart: !state.autoStart };
     default:
       return state;
   }
@@ -60,5 +64,6 @@ export function useTimer() {
     pause: () => dispatch({ type: 'PAUSE' }),
     reset: () => dispatch({ type: 'RESET' }),
     switchSession: () => dispatch({ type: 'SWITCH_SESSION' }),
+    toggleAutoStart: () => dispatch({ type: 'TOGGLE_AUTO_START' }),
   };
 }
