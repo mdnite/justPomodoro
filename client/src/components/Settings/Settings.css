@@ -84,3 +84,35 @@
   text-align: center;
   margin-top: 4px;
 }
+
+.settings__widget-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 6px;
+}
+
+.settings__toggle {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #F5F5F0;
+  border-radius: 8px;
+  padding: 6px 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.settings__toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.settings__toggle--on {
+  border-color: #5B9BD5;
+  color: #5B9BD5;
+}

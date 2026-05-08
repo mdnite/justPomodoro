@@ -10,7 +10,7 @@ const FIELDS = [
 ];
 
 // Settings panel for editing the user's timer preferences.
-export default function Settings() {
+export default function Settings({ autoStart, toggleAutoStart }) {
   const { settings, saveSettings } = useSettings();
   const [form, setForm] = useState(null);
   const [status, setStatus] = useState(null);
@@ -54,6 +54,16 @@ export default function Settings() {
   return (
     <form className="settings" onSubmit={handleSubmit}>
       <h2 className="settings__heading">Settings</h2>
+      <div className="settings__widget-row">
+        <span className="settings__label">Auto-start next session</span>
+        <button
+          type="button"
+          className={`settings__toggle ${autoStart ? 'settings__toggle--on' : ''}`}
+          onClick={toggleAutoStart}
+        >
+          {autoStart ? 'ON' : 'OFF'}
+        </button>
+      </div>
       {FIELDS.map((field) => (
         <label key={field.key} className="settings__field">
           <span className="settings__label">{field.label}</span>

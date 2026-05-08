@@ -1,5 +1,3 @@
-import { useTimer } from '../../hooks/useTimer';
-import { useSettings } from '../../context/SettingsContext';
 import './Timer.css';
 
 const SESSION_LABELS = {
@@ -8,6 +6,8 @@ const SESSION_LABELS = {
   long_break: 'Long Break',
 };
 
+const SESSION_TYPES = ['work', 'short_break', 'long_break'];
+
 // Format a number of seconds as MM:SS.
 function formatTime(seconds) {
   const m = String(Math.floor(seconds / 60)).padStart(2, '0');
@@ -15,15 +15,33 @@ function formatTime(seconds) {
   return `${m}:${s}`;
 }
 
-// Pomodoro countdown display backed by the useTimer hook.
-export default function Timer() {
-  const { settings } = useSettings();
-  const { timeRemaining, isRunning, sessionType, sessionCount, autoStart, start, pause, reset, toggleAutoStart } = useTimer({
-    sessionsBeforeLongBreak: settings?.sessions_before_long_break,
-  });
+// Pomodoro countdown display backed by the useTimer hook (lifted to App.jsx).
+export default function Timer({ timer }) {
+  const {
+    timeRemaining,
+    isRunning,
+    sessionType,
+    sessionCount,
+    start,
+    pause,
+    reset,
+    skip,
+    switchSessionType,
+  } = timer;
 
   return (
     <div className="timer">
+      <div className="timer__switcher">
+        {SESSION_TYPES.map((type) => (
+          <button
+            key={type}
+            className={`timer__switch-btn ${sessionType === type ? 'timer__switch-btn--active' : ''}`}
+            onClick={() => switchSessionType(type)}
+          >
+            {SESSION_LABELS[type]}
+          </button>
+        ))}
+      </div>
       <p className="timer__session-type">{SESSION_LABELS[sessionType]}</p>
       <p className="timer__countdown">{formatTime(timeRemaining)}</p>
       <p className="timer__session-count">Sessions completed: {sessionCount}</p>
@@ -34,11 +52,8 @@ export default function Timer() {
         <button className="timer__btn timer__btn--secondary" onClick={reset}>
           Reset
         </button>
-        <button
-          className={`timer__btn timer__btn--auto ${autoStart ? 'timer__btn--auto-on' : ''}`}
-          onClick={toggleAutoStart}
-        >
-          Auto {autoStart ? 'ON' : 'OFF'}
+        <button className="timer__btn timer__btn--skip" onClick={skip}>
+          Skip
         </button>
       </div>
     </div>

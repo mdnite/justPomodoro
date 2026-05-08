@@ -59,13 +59,45 @@
   color: #c0c0d0;
 }
 
-.timer__btn--auto {
+.timer__btn--skip {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #F5F5F0;
+  font-weight: 500;
 }
 
-.timer__btn--auto-on {
+.timer__btn--skip:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: #5B9BD5;
+  opacity: 1;
+}
+
+.timer__switcher {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.timer__switch-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #F5F5F0;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.timer__switch-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.timer__switch-btn--active {
+  background: rgba(91, 155, 213, 0.18);
   border-color: #5B9BD5;
   color: #5B9BD5;
 }

@@ -46,9 +46,14 @@ function timerReducer(state, action) {
       }
       return { ...state, timeRemaining: state.timeRemaining - 1 };
     }
-    case 'SWITCH_SESSION': {
+    case 'SWITCH_SESSION_TYPE': {
+      const { sessionType } = action;
+      if (!DURATIONS[sessionType]) return state;
+      return { ...state, isRunning: false, sessionType, timeRemaining: DURATIONS[sessionType] };
+    }
+    case 'SKIP_SESSION': {
       const { sessionType, sessionCount } = nextSession(state.sessionType, state.sessionCount, state.sessionsBeforeLongBreak);
-      return { ...state, isRunning: false, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
+      return { ...state, isRunning: state.autoStart, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
     }
     case 'TOGGLE_AUTO_START':
       return { ...state, autoStart: !state.autoStart };
@@ -62,7 +67,7 @@ function timerReducer(state, action) {
 // Timer hook driving the Pomodoro state machine and auto-saving completed work sessions.
 export function useTimer({ sessionsBeforeLongBreak } = {}) {
   const [state, dispatch] = useReducer(timerReducer, initialState);
-  const prevSessionTypeRef = useRef(state.sessionType);
+  const prevSessionCountRef = useRef(state.sessionCount);
 
   useEffect(() => {
     const value = Number(sessionsBeforeLongBreak);
@@ -78,23 +83,24 @@ export function useTimer({ sessionsBeforeLongBreak } = {}) {
   }, [state.isRunning]);
 
   useEffect(() => {
-    const prev = prevSessionTypeRef.current;
-    if (prev === 'work' && state.sessionType !== 'work') {
+    const prev = prevSessionCountRef.current;
+    if (state.sessionCount > prev) {
       saveSession({
         duration: DURATIONS.work,
         type: 'work',
         completedAt: new Date().toISOString(),
       }).catch((err) => console.error('Failed to save session', err));
     }
-    prevSessionTypeRef.current = state.sessionType;
-  }, [state.sessionType]);
+    prevSessionCountRef.current = state.sessionCount;
+  }, [state.sessionCount]);
 
   return {
     ...state,
     start: () => dispatch({ type: 'START' }),
     pause: () => dispatch({ type: 'PAUSE' }),
     reset: () => dispatch({ type: 'RESET' }),
-    switchSession: () => dispatch({ type: 'SWITCH_SESSION' }),
+    switchSessionType: (sessionType) => dispatch({ type: 'SWITCH_SESSION_TYPE', sessionType }),
+    skip: () => dispatch({ type: 'SKIP_SESSION' }),
     toggleAutoStart: () => dispatch({ type: 'TOGGLE_AUTO_START' }),
   };
 }
