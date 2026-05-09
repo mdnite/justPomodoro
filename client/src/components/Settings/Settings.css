@@ -1,3 +1,8 @@
+.settings_container{
+  display: flex;
+  flex-direction: column;
+}
+
 .settings {
   background: rgba(255, 255, 255, 0.10);
   backdrop-filter: blur(20px);
@@ -76,6 +81,7 @@
   font-size: 14px;
   text-align: center;
   margin-top: 4px;
+  padding: 10px;
 }
 
 .settings__error {
@@ -83,6 +89,7 @@
   font-size: 14px;
   text-align: center;
   margin-top: 4px;
+  padding: 10px;
 }
 
 .settings__widget-row {

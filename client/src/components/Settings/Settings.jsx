@@ -29,6 +29,15 @@ export default function Settings({ autoStart, toggleAutoStart }) {
   function handleSoundChange(checked) {
     setForm((prev) => ({ ...prev, sound_enabled: checked }));
   }
+  // Set status and error to null after 3 seconds
+  useEffect(() => {
+    if(!status && !error) return;
+    const id = setTimeout(() => {
+      setStatus(null);
+      setError(null);
+    }, 3000)
+    return () => clearTimeout(id);
+  }, [status, error])
 
   // Persist form values via the settings context, then show feedback.
   async function handleSubmit(e) {
@@ -47,11 +56,13 @@ export default function Settings({ autoStart, toggleAutoStart }) {
     } catch (err) {
       setError(err.message);
     }
+
   }
 
   if (!form) return null;
 
   return (
+    <div className="settings_container">
     <form className="settings" onSubmit={handleSubmit}>
       <h2 className="settings__heading">Settings</h2>
       <div className="settings__widget-row">
@@ -86,8 +97,9 @@ export default function Settings({ autoStart, toggleAutoStart }) {
         <span className="settings__label">Sound enabled</span>
       </label>
       <button className="settings__save" type="submit">Save</button>
+    </form>
       {status && <p className="settings__status">{status}</p>}
       {error && <p className="settings__error">{error}</p>}
-    </form>
+  </div>
   );
 }

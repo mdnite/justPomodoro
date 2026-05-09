@@ -10,7 +10,11 @@ import './App.css';
 function App() {
   const { isAuthenticated, logout } = useAuth();
   const { settings } = useSettings();
-  const timer = useTimer({ sessionsBeforeLongBreak: settings?.sessions_before_long_break });
+  const timer = useTimer({ sessionsBeforeLongBreak: settings?.sessions_before_long_break,
+                           workDuration: settings?.work_duration,
+                           shortBreak: settings?.short_break,
+                           longBreak: settings?.long_break,
+   });
 
   return (
     <main className="app">

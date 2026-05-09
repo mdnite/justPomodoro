@@ -41,3 +41,17 @@
   letter-spacing: 0.05em;
   color: #e8e8f0;
 }
+
+.app__topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
+}
+
+.app__topbar-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}

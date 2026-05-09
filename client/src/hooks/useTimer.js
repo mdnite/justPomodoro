@@ -16,6 +16,7 @@ const initialState = {
   sessionCount: 0,
   autoStart: false,
   sessionsBeforeLongBreak: DEFAULT_SESSIONS_BEFORE_LONG_BREAK,
+  durations: DURATIONS,
 };
 
 // Pick the next session type and updated count given the current session.
@@ -38,25 +39,27 @@ function timerReducer(state, action) {
     case 'PAUSE':
       return { ...state, isRunning: false };
     case 'RESET':
-      return { ...state, isRunning: false, timeRemaining: DURATIONS[state.sessionType] };
+      return { ...state, isRunning: false, timeRemaining: state.durations[state.sessionType] };
     case 'TICK': {
       if (state.timeRemaining <= 1) {
         const { sessionType, sessionCount } = nextSession(state.sessionType, state.sessionCount, state.sessionsBeforeLongBreak);
-        return { ...state, isRunning: state.autoStart, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
+        return { ...state, isRunning: state.autoStart, sessionType, sessionCount, timeRemaining: state.durations[sessionType] };
       }
       return { ...state, timeRemaining: state.timeRemaining - 1 };
     }
     case 'SWITCH_SESSION_TYPE': {
       const { sessionType } = action;
       if (!DURATIONS[sessionType]) return state;
-      return { ...state, isRunning: false, sessionType, timeRemaining: DURATIONS[sessionType] };
+      return { ...state, isRunning: false, sessionType, timeRemaining: state.durations[sessionType] };
     }
     case 'SKIP_SESSION': {
       const { sessionType, sessionCount } = nextSession(state.sessionType, state.sessionCount, state.sessionsBeforeLongBreak);
-      return { ...state, isRunning: state.autoStart, sessionType, sessionCount, timeRemaining: DURATIONS[sessionType] };
+      return { ...state, isRunning: state.autoStart, sessionType, sessionCount, timeRemaining: state.durations[sessionType] };
     }
     case 'TOGGLE_AUTO_START':
       return { ...state, autoStart: !state.autoStart };
+    case 'SET_DURATIONS':
+      return { ...state, durations: action.durations, timeRemaining: action.durations[state.sessionType]};
     case 'SET_SESSIONS_BEFORE_LONG_BREAK':
       return { ...state, sessionsBeforeLongBreak: action.value };
     default:
@@ -65,9 +68,20 @@ function timerReducer(state, action) {
 }
 
 // Timer hook driving the Pomodoro state machine and auto-saving completed work sessions.
-export function useTimer({ sessionsBeforeLongBreak } = {}) {
+export function useTimer({ sessionsBeforeLongBreak, workDuration, shortBreak, longBreak } = {}) {
   const [state, dispatch] = useReducer(timerReducer, initialState);
   const prevSessionCountRef = useRef(state.sessionCount);
+
+  useEffect(() => {
+    const work = workDuration ? workDuration * 60 : DURATIONS.work;
+    const short_break = shortBreak ? shortBreak * 60 : DURATIONS.short_break;
+    const long_break = longBreak ? longBreak * 60 : DURATIONS.long_break;
+
+    dispatch({
+      type: 'SET_DURATIONS',
+      durations: { work, short_break, long_break},
+    });
+  }, [workDuration, shortBreak, longBreak])
 
   useEffect(() => {
     const value = Number(sessionsBeforeLongBreak);
@@ -86,7 +100,7 @@ export function useTimer({ sessionsBeforeLongBreak } = {}) {
     const prev = prevSessionCountRef.current;
     if (state.sessionCount > prev) {
       saveSession({
-        duration: DURATIONS.work,
+        duration: state.durations.work,
         type: 'work',
         completedAt: new Date().toISOString(),
       }).catch((err) => console.error('Failed to save session', err));
