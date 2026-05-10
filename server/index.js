@@ -6,7 +6,6 @@ import tasksRouter from './tasks/tasks.routes.js';
 import sessionsRouter from './sessions/sessions.routes.js';
 import settingsRouter from './settings/settings.routes.js';
 import weatherRouter from './weather/weather.routes.js';
-import { authenticate } from './auth/auth.middleware.js';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 
@@ -21,7 +20,7 @@ app.use(passport.initialize());
 app.use('/api/auth', authRouter);
 app.use('/api/tasks', tasksRouter);
 app.use('/api/sessions', sessionsRouter);
-app.use('/api/settings', authenticate, settingsRouter);
+app.use('/api/settings', settingsRouter);
 app.use('/api/weather', weatherRouter);
 
 

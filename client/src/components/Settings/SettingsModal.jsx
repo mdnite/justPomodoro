@@ -1,18 +1,10 @@
-import { useEffect } from 'react';
 import Settings from './Settings';
+import { useEscapeKey } from '../../hooks/useEscapeKey';
 import './SettingsModal.css';
 
 // Modal overlay that wraps the Settings form; owns its own close paths (backdrop, X, Escape).
 export default function SettingsModal({ isOpen, onClose, autoStart, toggleAutoStart }) { // NOSONAR
-  // Close the modal on Escape key while it is open.
-  useEffect(() => {
-    if (!isOpen) return;
-    function handleKeyDown(e) {
-      if (e.key === 'Escape') onClose();
-    }
-    globalThis.addEventListener('keydown', handleKeyDown);
-    return () => globalThis.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose]);
+  useEscapeKey(onClose, isOpen);
 
   if (!isOpen) return null;
 
