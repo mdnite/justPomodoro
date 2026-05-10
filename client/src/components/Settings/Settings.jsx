@@ -15,17 +15,20 @@ const SECTIONS = [
   { id: 'music', label: 'Music' },
 ];
 
-// Settings panel for editing the user's timer preferences.
+// Gate the settings form on initial settings load.
 export default function Settings({ autoStart, toggleAutoStart }) {
-  const { settings, saveSettings } = useSettings();
-  const [form, setForm] = useState(null);
+  const { settings } = useSettings();
+  if (!settings) return null;
+  return <SettingsForm settings={settings} autoStart={autoStart} toggleAutoStart={toggleAutoStart} />;
+}
+
+// Settings panel for editing the user's timer preferences.
+function SettingsForm({ settings, autoStart, toggleAutoStart }) {
+  const { saveSettings } = useSettings();
+  const [form, setForm] = useState(settings);
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState('timer');
-
-  useEffect(() => {
-    if (settings) setForm(settings);
-  }, [settings]);
 
   // Update one form field when the user types into an input.
   function handleNumberChange(key, value) {
@@ -72,8 +75,6 @@ export default function Settings({ autoStart, toggleAutoStart }) {
       setError(err.message);
     }
   }
-
-  if (!form) return null;
 
   return (
     <div className="settings_container">
