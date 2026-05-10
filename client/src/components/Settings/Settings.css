@@ -10,10 +10,9 @@
   border-radius: 16px;
   padding: 24px;
   width: 100%;
-  max-width: 360px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .settings__heading {
@@ -58,6 +57,14 @@
   border-color: #5B9BD5;
 }
 
+.settings__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
 .settings__save {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
@@ -68,12 +75,28 @@
   font-size: 15px;
   cursor: pointer;
   transition: background 200ms ease, border-color 200ms ease;
-  margin-top: 8px;
 }
 
 .settings__save:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: #5B9BD5;
+}
+
+.settings__reset {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #A0A0A0;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.settings__reset:hover {
+  color: #ff6b6b;
+  border-color: #ff6b6b;
 }
 
 .settings__status {
@@ -97,9 +120,62 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 6px 0 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  margin-bottom: 6px;
+  padding: 6px 0;
+}
+
+.settings__layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  min-height: 280px;
+}
+
+.settings__nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 110px;
+  padding-right: 16px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.settings__nav-item {
+  background: transparent;
+  border: none;
+  text-align: left;
+  font-family: 'Fraunces', serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: #A0A0A0;
+  padding: 6px 0;
+  cursor: pointer;
+  transition: color 200ms ease;
+  letter-spacing: 0.02em;
+}
+
+.settings__nav-item:hover {
+  color: #F5F5F0;
+}
+
+.settings__nav-item--active {
+  color: #F5F5F0;
+  font-weight: 700;
+}
+
+.settings__panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.settings__placeholder {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: #A0A0A0;
+  font-style: italic;
+  margin: 0;
 }
 
 .settings__toggle {

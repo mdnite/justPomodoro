@@ -1,0 +1,20 @@
+.settings-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  color: #F5F5F0;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+.settings-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+}

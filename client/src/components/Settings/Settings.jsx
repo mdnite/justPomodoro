@@ -2,11 +2,17 @@ import { useEffect, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
 import './Settings.css';
 
-const FIELDS = [
-  { key: 'work_duration', label: 'Work duration (min)', min: 1, max: 180 },
-  { key: 'short_break', label: 'Short break (min)', min: 1, max: 60 },
-  { key: 'long_break', label: 'Long break (min)', min: 1, max: 120 },
-  { key: 'sessions_before_long_break', label: 'Sessions before long break', min: 1, max: 10 },
+const TIMER_FIELDS = [
+  { key: 'work_duration', label: 'Work Duration (minutes)', min: 1, max: 180 },
+  { key: 'short_break', label: 'Short Break (minutes)', min: 1, max: 60 },
+  { key: 'long_break', label: 'Long Break (minutes)', min: 1, max: 120 },
+  { key: 'sessions_before_long_break', label: 'Sessions Before Long Break', min: 1, max: 10 },
+];
+
+const SECTIONS = [
+  { id: 'timer', label: 'Timer' },
+  { id: 'sound', label: 'Sound' },
+  { id: 'music', label: 'Music' },
 ];
 
 // Settings panel for editing the user's timer preferences.
@@ -15,6 +21,7 @@ export default function Settings({ autoStart, toggleAutoStart }) {
   const [form, setForm] = useState(null);
   const [status, setStatus] = useState(null);
   const [error, setError] = useState(null);
+  const [activeSection, setActiveSection] = useState('timer');
 
   useEffect(() => {
     if (settings) setForm(settings);
@@ -29,15 +36,23 @@ export default function Settings({ autoStart, toggleAutoStart }) {
   function handleSoundChange(checked) {
     setForm((prev) => ({ ...prev, sound_enabled: checked }));
   }
-  // Set status and error to null after 3 seconds
+
+  // Set status and error to null after 3 seconds.
   useEffect(() => {
-    if(!status && !error) return;
+    if (!status && !error) return;
     const id = setTimeout(() => {
       setStatus(null);
       setError(null);
-    }, 3000)
+    }, 3000);
     return () => clearTimeout(id);
-  }, [status, error])
+  }, [status, error]);
+
+  // Revert unsaved edits back to the last-loaded settings.
+  function handleReset() {
+    if (settings) setForm(settings);
+    setStatus(null);
+    setError(null);
+  }
 
   // Persist form values via the settings context, then show feedback.
   async function handleSubmit(e) {
@@ -56,50 +71,84 @@ export default function Settings({ autoStart, toggleAutoStart }) {
     } catch (err) {
       setError(err.message);
     }
-
   }
 
   if (!form) return null;
 
   return (
     <div className="settings_container">
-    <form className="settings" onSubmit={handleSubmit}>
-      <h2 className="settings__heading">Settings</h2>
-      <div className="settings__widget-row">
-        <span className="settings__label">Auto-start next session</span>
-        <button
-          type="button"
-          className={`settings__toggle ${autoStart ? 'settings__toggle--on' : ''}`}
-          onClick={toggleAutoStart}
-        >
-          {autoStart ? 'ON' : 'OFF'}
-        </button>
-      </div>
-      {FIELDS.map((field) => (
-        <label key={field.key} className="settings__field">
-          <span className="settings__label">{field.label}</span>
-          <input
-            className="settings__input"
-            type="number"
-            min={field.min}
-            max={field.max}
-            value={form[field.key] ?? ''}
-            onChange={(e) => handleNumberChange(field.key, e.target.value)}
-          />
-        </label>
-      ))}
-      <label className="settings__field settings__field--checkbox">
-        <input
-          type="checkbox"
-          checked={!!form.sound_enabled}
-          onChange={(e) => handleSoundChange(e.target.checked)}
-        />
-        <span className="settings__label">Sound enabled</span>
-      </label>
-      <button className="settings__save" type="submit">Save</button>
-    </form>
+      <form className="settings" onSubmit={handleSubmit}>
+        <h2 className="settings__heading">Settings</h2>
+        <div className="settings__layout">
+          <nav className="settings__nav" aria-label="Settings sections">
+            {SECTIONS.map((section) => (
+              <button
+                key={section.id}
+                type="button"
+                className={`settings__nav-item ${activeSection === section.id ? 'settings__nav-item--active' : ''}`}
+                onClick={() => setActiveSection(section.id)}
+                aria-pressed={activeSection === section.id}
+              >
+                {section.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="settings__panel">
+            {activeSection === 'timer' && (
+              <>
+                {TIMER_FIELDS.map((field) => (
+                  <label key={field.key} className="settings__field">
+                    <span className="settings__label">{field.label}</span>
+                    <input
+                      className="settings__input"
+                      type="number"
+                      min={field.min}
+                      max={field.max}
+                      value={form[field.key] ?? ''}
+                      onChange={(e) => handleNumberChange(field.key, e.target.value)}
+                    />
+                  </label>
+                ))}
+                <div className="settings__widget-row">
+                  <span className="settings__label">Auto Start</span>
+                  <button
+                    type="button"
+                    className={`settings__toggle ${autoStart ? 'settings__toggle--on' : ''}`}
+                    onClick={toggleAutoStart}
+                  >
+                    {autoStart ? 'ON' : 'OFF'}
+                  </button>
+                </div>
+              </>
+            )}
+
+            {activeSection === 'sound' && (
+              <label className="settings__field settings__field--checkbox">
+                <input
+                  type="checkbox"
+                  checked={!!form.sound_enabled}
+                  onChange={(e) => handleSoundChange(e.target.checked)}
+                />
+                <span className="settings__label">Sound Enabled</span>
+              </label>
+            )}
+
+            {activeSection === 'music' && (
+              <p className="settings__placeholder">Coming soon</p>
+            )}
+          </div>
+        </div>
+
+        <div className="settings__actions">
+          <button className="settings__reset" type="button" onClick={handleReset}>
+            Reset Changes
+          </button>
+          <button className="settings__save" type="submit">Save</button>
+        </div>
+      </form>
       {status && <p className="settings__status">{status}</p>}
       {error && <p className="settings__error">{error}</p>}
-  </div>
+    </div>
   );
 }
