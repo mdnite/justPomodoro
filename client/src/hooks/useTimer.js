@@ -67,10 +67,22 @@ function timerReducer(state, action) {
   }
 }
 
+// Plays alarm sound when timer ends
+function playAlarm(src) {
+  const audio = new Audio(src);
+  audio.play().catch((err) => {console.log("Playback blocked or failed", err)});
+}
+
 // Timer hook driving the Pomodoro state machine and auto-saving completed work sessions.
-export function useTimer({ sessionsBeforeLongBreak, workDuration, shortBreak, longBreak } = {}) {
+export function useTimer({ sessionsBeforeLongBreak, workDuration, shortBreak, longBreak, alarmSrc, soundEnabled } = {}) {
   const [state, dispatch] = useReducer(timerReducer, initialState);
   const prevSessionCountRef = useRef(state.sessionCount);
+  const prevTimeRemainingRef = useRef(state.timeRemaining)
+  const alarmSrcRef = useRef(alarmSrc);
+
+  useEffect(() => {
+    alarmSrcRef.current = alarmSrc;
+  }, [alarmSrc]);
 
   useEffect(() => {
     const work = workDuration ? workDuration * 60 : DURATIONS.work;
@@ -95,6 +107,18 @@ export function useTimer({ sessionsBeforeLongBreak, workDuration, shortBreak, lo
     const id = setInterval(() => dispatch({ type: 'TICK' }), 1000);
     return () => clearInterval(id);
   }, [state.isRunning]);
+
+  // plays alarm when session ends - detected by timeRemaining jumping back up
+  useEffect(() => {
+    const prev = prevTimeRemainingRef.current;
+    const curr = state.timeRemaining;
+    
+    if(soundEnabled && prev <= 1 && curr > 1) {
+      playAlarm(alarmSrcRef.current);
+    }
+
+    prevTimeRemainingRef.current = curr;
+  }, [state.timeRemaining, soundEnabled]);
 
   useEffect(() => {
     const prev = prevSessionCountRef.current;

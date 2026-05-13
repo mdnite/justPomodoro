@@ -6,17 +6,21 @@ import SettingsModal from './components/Settings/SettingsModal';
 import { useAuth } from './context/AuthContext';
 import { useSettings } from './context/SettingsContext';
 import { useTimer } from './hooks/useTimer';
+import { getAlarmSrc } from './hooks/alarmSounds';
 import './App.css';
 
 // Top-level authenticated layout: timer, task list, settings entry-points.
 function App() {
   const { isAuthenticated, logout } = useAuth();
   const { settings } = useSettings();
+  const alarmSoundSrc = getAlarmSrc(settings?.alarm_sound);
   const timer = useTimer({
     sessionsBeforeLongBreak: settings?.sessions_before_long_break,
     workDuration: settings?.work_duration,
     shortBreak: settings?.short_break,
     longBreak: settings?.long_break,
+    alarmSrc: alarmSoundSrc,
+    soundEnabled: settings?.sound_enabled,
   });
   // Whether the settings modal is currently open.
   const [showSettings, setShowSettings] = useState(false);

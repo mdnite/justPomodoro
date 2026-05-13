@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSettings } from '../../context/SettingsContext';
+import { ALARM_SOUNDS } from '../../hooks/alarmSounds';
 import './Settings.css';
 
 const TIMER_FIELDS = [
@@ -69,11 +70,29 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
         long_break: Number(form.long_break),
         sound_enabled: !!form.sound_enabled,
         sessions_before_long_break: Number(form.sessions_before_long_break),
+        alarm_sound: form.alarm_sound,
       });
       setStatus('Saved');
     } catch (err) {
       setError(err.message);
     }
+  }
+
+  // Previews alarm sound when users selects one
+  function handleSoundChange(value) {
+    setForm((prev) => ({ ...prev, alarm_sound: value}));
+
+    // preview the selected sound
+    const sound = ALARM_SOUNDS.find((s) => s.value === value);
+    if (sound) {
+      const audio = new Audio(sound.src);
+      audio.play();
+    }
+  }
+
+  // Toggle checkbox for alarm sound
+  function handleToggleSound(checked) {
+    setForm((prev) => ({ ...prev, sound_enabled: checked }));
   }
 
   return (
@@ -125,14 +144,32 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
             )}
 
             {activeSection === 'sound' && (
-              <label className="settings__field settings__field--checkbox">
-                <input
-                  type="checkbox"
-                  checked={!!form.sound_enabled}
-                  onChange={(e) => handleSoundChange(e.target.checked)}
-                />
-                <span className="settings__label">Sound Enabled</span>
-              </label>
+              <> 
+                {/* Dropdown menu for alarm sound selection */}
+                <label className='settings__field'>
+                  <span className='settings__label'>Select alert sound</span>
+                  <select className='settings__select'
+                          value={form.alarm_sound ?? 'alarm_1'}
+                          onChange={(e) => handleSoundChange(e.target.value)}
+                          >
+                    {ALARM_SOUNDS.map((sound) => (
+                      <option key={sound.value} value={sound.value}>
+                        {sound.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+
+                <label className="settings__field settings__field--checkbox">
+                  <input
+                    type="checkbox"
+                    checked={!!form.sound_enabled}
+                    onChange={(e) => handleToggleSound(e.target.checked)}
+                    />
+                  <span className="settings__label">Sound Enabled</span>
+                </label>
+              </>
             )}
 
             {activeSection === 'music' && (
