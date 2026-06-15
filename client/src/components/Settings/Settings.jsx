@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast'; 
 import { useSettings } from '../../context/SettingsContext';
 import { ALARM_SOUNDS } from '../../hooks/alarmSounds';
 import './Settings.css';
@@ -27,8 +28,6 @@ export default function Settings({ autoStart, toggleAutoStart }) { // NOSONAR
 function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
   const { saveSettings } = useSettings();
   const [form, setForm] = useState(settings);
-  const [status, setStatus] = useState(null);
-  const [error, setError] = useState(null);
   const [activeSection, setActiveSection] = useState('timer');
 
   // Update one form field when the user types into an input.
@@ -41,28 +40,17 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
     setForm((prev) => ({ ...prev, sound_enabled: checked }));
   }
 
-  // Set status and error to null after 3 seconds.
-  useEffect(() => {
-    if (!status && !error) return;
-    const id = setTimeout(() => {
-      setStatus(null);
-      setError(null);
-    }, 3000);
-    return () => clearTimeout(id);
-  }, [status, error]);
 
   // Revert unsaved edits back to the last-loaded settings.
   function handleReset() {
     if (settings) setForm(settings);
-    setStatus(null);
-    setError(null);
   }
 
   // Persist form values via the settings context, then show feedback.
   async function handleSubmit(e) {
     e.preventDefault();
-    setError(null);
-    setStatus(null);
+    // setError(null);
+    // setStatus(null);
     try {
       await saveSettings({
         work_duration: Number(form.work_duration),
@@ -71,10 +59,11 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
         sound_enabled: !!form.sound_enabled,
         sessions_before_long_break: Number(form.sessions_before_long_break),
         alarm_sound: form.alarm_sound,
+        alarm_volume: Number(form.alarm_volume ?? 1),
       });
-      setStatus('Saved');
+      toast.success('Settings saved');
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message);
     }
   }
 
@@ -86,6 +75,7 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
     const sound = ALARM_SOUNDS.find((s) => s.value === value);
     if (sound) {
       const audio = new Audio(sound.src);
+      audio.volume = form.alarm_volume ?? 1;
       audio.play();
     }
   }
@@ -97,6 +87,7 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
 
   return (
     <div className="settings_container">
+      <Toaster position="top-center"/>
       <form className="settings" onSubmit={handleSubmit}>
         <h2 className="settings__heading">Settings</h2>
         <div className="settings__layout">
@@ -160,6 +151,18 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
                   </select>
                 </label>
 
+                <label className='settings__field'>
+                  <span className='settings__label'>Alert Volume ({Math.round((form.alarm_volume ?? 1) * 100)}%)</span>
+                  <input
+                    className='settings__slider'
+                    type='range'
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    value={form.alarm_volume ?? 1}
+                    onChange={(e) => setForm((prev) => ({ ...prev, alarm_volume: Number(e.target.value) }))}
+                  />
+                </label>
 
                 <label className="settings__field settings__field--checkbox">
                   <input
@@ -185,8 +188,6 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
           <button className="settings__save" type="submit">Save</button>
         </div>
       </form>
-      {status && <p className="settings__status">{status}</p>}
-      {error && <p className="settings__error">{error}</p>}
     </div>
   );
 }

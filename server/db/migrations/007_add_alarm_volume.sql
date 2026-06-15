@@ -1,0 +1,2 @@
+ALTER TABLE settings
+ADD COLUMN alarm_volume FLOAT DEFAULT 1.0;

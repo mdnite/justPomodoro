@@ -20,6 +20,7 @@ function App() {
     shortBreak: settings?.short_break,
     longBreak: settings?.long_break,
     alarmSrc: alarmSoundSrc,
+    alarmVolume: settings?.alarm_volume,
     soundEnabled: settings?.sound_enabled,
   });
   // Whether the settings modal is currently open.
