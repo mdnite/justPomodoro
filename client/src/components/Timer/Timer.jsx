@@ -1,3 +1,4 @@
+import SkipForwardButton from './SkipForwardButton';
 import './Timer.css';
 
 const SESSION_LABELS = {
@@ -46,15 +47,13 @@ export default function Timer({ timer }) {
       <p className="timer__countdown">{formatTime(timeRemaining)}</p>
       <p className="timer__session-count">Sessions completed: {sessionCount}</p>
       <div className="timer__controls">
-        <button className="timer__btn" onClick={isRunning ? pause : start}>
+        <button className="timer__btn timer__btn--primary" onClick={isRunning ? pause : start}>
           {isRunning ? 'Pause' : 'Start'}
         </button>
         <button className="timer__btn timer__btn--secondary" onClick={reset}>
           Reset
         </button>
-        <button className="timer__btn timer__btn--skip" onClick={skip}>
-          Skip
-        </button>
+        <SkipForwardButton onClick={skip}/>
       </div>
     </div>
   );

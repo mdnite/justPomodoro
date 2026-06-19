@@ -43,9 +43,8 @@
   border: none;
   border-radius: 8px;
   font-size: 1rem;
-  font-weight: 600;
+  font-weight: lighter;
   cursor: pointer;
-  background: #e94560;
   color: #fff;
   transition: opacity 0.15s;
 }
@@ -54,22 +53,40 @@
   opacity: 0.85;
 }
 
+.timer__btn--primary{
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: #ef2849;
+}
+
+.timer__btn--primary:hover {
+  background: #e94560;
+  border-color: #5B9BD5;
+  font-weight: bolder;
+}
+
 .timer__btn--secondary {
+  border: 1px solid rgba(255, 255, 255, 0.15);
   background: #2e2e4a;
   color: #c0c0d0;
+}
+
+.timer__btn--secondary:hover {
+  border-color: #5B9BD5;
+  background: #4c4c77;
+  font-weight: bolder;
 }
 
 .timer__btn--skip {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #F5F5F0;
-  font-weight: 500;
 }
 
 .timer__btn--skip:hover {
   background: rgba(255, 255, 255, 0.15);
   border-color: #5B9BD5;
   opacity: 1;
+  font-weight: bolder;
 }
 
 .timer__switcher {

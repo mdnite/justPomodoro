@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Timer from './components/Timer/Timer';
 import TaskList from './components/TaskList/TaskList';
 import SettingsButton from './components/Settings/SettingsButton';
+import LogoutButton from './components/Logout/LogoutButton';
 import SettingsModal from './components/Settings/SettingsModal';
 import { useAuth } from './context/AuthContext';
 import { useSettings } from './context/SettingsContext';
@@ -44,7 +45,7 @@ function App() {
       <div className="app__panels">
         {isAuthenticated && <TaskList />}
       </div>
-      <button className="app__logout" onClick={logout}>Logout</button>
+      {isAuthenticated && <LogoutButton onClick={logout} />}
 
       {isAuthenticated && (
         <SettingsModal
