@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import toast, { Toaster } from 'react-hot-toast'; 
 import { useSettings } from '../../context/SettingsContext';
 import { ALARM_SOUNDS } from '../../hooks/alarmSounds';
@@ -29,17 +29,12 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
   const { saveSettings } = useSettings();
   const [form, setForm] = useState(settings);
   const [activeSection, setActiveSection] = useState('timer');
+  const audioRef = useRef(null); // Audio reference to keep track of audio object
 
   // Update one form field when the user types into an input.
   function handleNumberChange(key, value) {
     setForm((prev) => ({ ...prev, [key]: value === '' ? '' : Number(value) }));
   }
-
-  // Toggle the sound_enabled boolean.
-  function handleSoundChange(checked) {
-    setForm((prev) => ({ ...prev, sound_enabled: checked }));
-  }
-
 
   // Revert unsaved edits back to the last-loaded settings.
   function handleReset() {
@@ -70,19 +65,40 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
   // Previews alarm sound when users selects one
   function handleSoundChange(value) {
     setForm((prev) => ({ ...prev, alarm_sound: value}));
-
+    
+    // stop previous alarm
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    
     // preview the selected sound
     const sound = ALARM_SOUNDS.find((s) => s.value === value);
     if (sound) {
       const audio = new Audio(sound.src);
       audio.volume = form.alarm_volume ?? 1;
-      audio.play();
+
+      audioRef.current = audio;
+
+      audio.play().catch((error) => {
+        console.error("Audio playback failed: ", error);
+      });
     }
   }
 
   // Toggle checkbox for alarm sound
   function handleToggleSound(checked) {
     setForm((prev) => ({ ...prev, sound_enabled: checked }));
+  }
+
+  // Handle volume change
+  function handleVolumeChange(value) {
+    const volume = Number(value);
+    setForm((prev) => ({ ...prev, alarm_volume: volume }));
+
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
   }
 
   return (
@@ -160,7 +176,7 @@ function SettingsForm({ settings, autoStart, toggleAutoStart }) { // NOSONAR
                     max={1}
                     step={0.01}
                     value={form.alarm_volume ?? 1}
-                    onChange={(e) => setForm((prev) => ({ ...prev, alarm_volume: Number(e.target.value) }))}
+                    onChange={(e) => handleVolumeChange(e.target.value)}
                   />
                 </label>
 
