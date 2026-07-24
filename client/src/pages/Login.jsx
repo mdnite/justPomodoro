@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import './auth.css';
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 
 const GoogleIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20">
@@ -61,10 +62,10 @@ function Login() {
 
           {successMessage && <p className="auth-success">{successMessage}</p>}
 
-          <button className="auth-btn" type="button" onClick={() => window.location.href= "http://localhost:3001/api/auth/google"}>
+          <button className="auth-btn" type="button" onClick={() => window.location.href= `${backendUrl}/api/auth/google`}>
             <GoogleIcon /> Sign in with Google
           </button>
-          <button className="auth-btn" type="button" onClick={() => window.location.href = "http://localhost:3001/api/auth/github"}>
+          <button className="auth-btn" type="button" onClick={() => window.location.href = `${backendUrl}/api/auth/github`}>
             <GitHubIcon /> Sign in with GitHub
           </button>
 
@@ -101,6 +102,10 @@ function Login() {
 
           <p className="auth-footer">
             Don't have an account? <Link to="/signup">Create an account</Link>
+          </p>
+
+          <p className="auth-footer">
+            <Link to="/forgot-password">Forgot Password?</Link>
           </p>
         </div>
       </div>

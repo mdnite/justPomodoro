@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@boxicons/react": "^1.0.3",
+    "dotenv": "^17.4.2",
     "lucide-react": "^1.21.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
